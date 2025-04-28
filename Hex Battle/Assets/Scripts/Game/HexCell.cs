@@ -1,0 +1,44 @@
+using UnityEngine;
+
+public class HexCell : Node
+{
+    private Terrain _type;
+    private SpriteRenderer _renderer;
+
+    public HexCell(int q, int r) : base(q, r)
+    {
+        _type = Terrain.Plain;
+        _renderer = GetComponent<SpriteRenderer>();
+    }
+
+    public Terrain GetTerrain()
+    {
+        return _type;
+    }
+
+    public void SetTerrain(Terrain type)
+    {
+        _type = type;
+        SetColor(GetTileColor(_type));
+    }
+
+    private void SetColor(Color c)
+    {
+        _renderer.color = c;
+    }
+
+    private Color GetTileColor(Terrain type)
+    {
+        switch (type)
+        {
+            case Terrain.Plain:
+                return Color.white;
+            case Terrain.Forest:
+                return Color.green;
+            case Terrain.Mountain:
+                return Color.gray;
+            default:
+                return Color.white;
+        }
+    }
+}
