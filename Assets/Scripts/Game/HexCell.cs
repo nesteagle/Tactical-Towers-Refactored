@@ -5,7 +5,7 @@ public class HexCell : Node
     private Terrain _type;
     private SpriteRenderer _renderer;
 
-    public HexCell(int q, int r) : base(q, r)
+    public void Awake()
     {
         _type = Terrain.Plain;
         _renderer = GetComponent<SpriteRenderer>();

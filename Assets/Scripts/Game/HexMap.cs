@@ -6,17 +6,21 @@ public class HexMap : MonoBehaviour
 {
     [SerializeField] private GameObject _cellPrefab;
 
-    private readonly Dictionary<Axial, HexCell> _cells;
+    private Dictionary<Axial, HexCell> _cells;
     private readonly int _radius = 12;
+    private const int ZERO = 0;
 
-    public HexMap()
+    public void Awake()
     {
+        _cells = new Dictionary<Axial, HexCell>();
         GenerateMap(_radius);
+        GenerateAdjacentTiles();
+        GenerateTerrain();
+        Debug.Log("Generated map");
     }
 
     private void GenerateMap(int radius)
     {
-        // make symmetrical by doing zero to radius, or -radius to 0
         for (int q = -radius; q <= radius; q++)
         {
             int lowerR = Mathf.Max(-radius, -q - radius);
@@ -26,7 +30,6 @@ public class HexMap : MonoBehaviour
                 AddCell(q, r);
             }
         }
-        GenerateAdjacentTiles();
     }
 
     private void GenerateAdjacentTiles()
@@ -47,11 +50,36 @@ public class HexMap : MonoBehaviour
         }
     }
 
+    private void GenerateTerrain()
+    {
+        foreach (Axial axial in _cells.Keys)
+        {
+            if (axial.Q < 0 || (axial.Q == 0 && axial.R < 0))
+            {
+                continue;
+            }
+            HexCell cell = _cells[axial];
+            HexCell oppositeCell = GetCell(-axial.Q, -axial.R);
+
+            // generate terrain for both cells.
+        }
+    }
+
     private void AddCell(int q, int r)
     {
         Axial a = new(q, r);
-        HexCell c = new(q, r);
-        _cells.Add(a, c);
+
+        Vector3 position = new(a.Q * (HexData.InnerRadius * 2f) + (a.R * HexData.InnerRadius), a.R * (HexData.OuterRadius * 1.5f), 10f);
+
+        GameObject cellObj = Instantiate(_cellPrefab);
+        cellObj.transform.SetParent(transform);
+        cellObj.transform.localPosition = position;
+        HexCell cell = cellObj.GetComponent<HexCell>();
+        if (GetCell(q, r) == null)
+        {
+            _cells.Add(a, cell);
+        }
+        cell.Initialize(a);
     }
 
     public HexCell GetCell(int q, int r)

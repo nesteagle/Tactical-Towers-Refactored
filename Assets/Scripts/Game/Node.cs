@@ -12,11 +12,10 @@ public abstract class Node : MonoBehaviour
     public bool Occupied { get; set; }
     public int Weight { get; set; }
 
-    public Node(int q, int r)
+    public Node()
     {
         Weight = 0;
         Occupied = false;
-        Position = new Vector2Int(q, r);
         _adjacentTiles = new List<Node>();
     }
 
@@ -28,5 +27,10 @@ public abstract class Node : MonoBehaviour
     public List<Node> GetAdjacentTiles()
     {
         return _adjacentTiles;
+    }
+
+    public void Initialize(Axial a)
+    {
+        Position = new Vector2Int(a.Q, a.R);
     }
 }
