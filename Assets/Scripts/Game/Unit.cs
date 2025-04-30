@@ -1,18 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public UnitState State { get; set; }
+
+    private int _health;
+
+    public int GetHealth()
     {
-        
+        return _health;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void RemoveHealth()
     {
-        
+        _health--;
+        if (_health <= 0)
+        {   
+            Destroy(gameObject);
+            // notify observers
+        }
     }
 }

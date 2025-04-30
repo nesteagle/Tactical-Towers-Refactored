@@ -61,7 +61,27 @@ public class HexMap : MonoBehaviour
             HexCell cell = _cells[axial];
             HexCell oppositeCell = GetCell(-axial.Q, -axial.R);
 
-            // generate terrain for both cells.
+            Terrain t = GetRandomTerrain();
+
+            cell.SetTerrain(t);
+            oppositeCell.SetTerrain(t);
+        }
+    }
+
+    private Terrain GetRandomTerrain()
+    {
+        int randomValue = UnityEngine.Random.Range(0, TerrainChances.TotalChance);
+        if (randomValue < TerrainChances.PlainChance)
+        {
+            return Terrain.Plain;
+        }
+        else if (randomValue < TerrainChances.PlainChance + TerrainChances.ForestChance)
+        {
+            return Terrain.Forest;
+        }
+        else
+        {
+            return Terrain.Mountain;
         }
     }
 
