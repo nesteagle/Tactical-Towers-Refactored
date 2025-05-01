@@ -1,11 +1,12 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class HexCell : Node
+public class HexCell : Pathable
 {
     private Terrain _type;
     private SpriteRenderer _renderer;
 
-    public void Awake()
+    private void Awake()
     {
         _type = Terrain.Plain;
         _renderer = GetComponent<SpriteRenderer>();
@@ -25,6 +26,11 @@ public class HexCell : Node
     private void SetColor(Color c)
     {
         _renderer.color = c;
+    }
+
+    public void AddAdjacentTile(HexCell tile)
+    {
+        AddEdge(tile);
     }
 
     private Color GetTileColor(Terrain type)

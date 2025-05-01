@@ -10,7 +10,7 @@ public class HexMap : MonoBehaviour
     private readonly int _radius = 12;
     private const int ZERO = 0;
 
-    public void Awake()
+    private void Awake()
     {
         _cells = new Dictionary<Axial, HexCell>();
         GenerateMap(_radius);

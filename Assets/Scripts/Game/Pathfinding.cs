@@ -3,13 +3,13 @@ using UnityEngine;
 using System.Linq;
 public class Pathfinding : MonoBehaviour
 {
-    public static List<HexCell> FindPath(HexCell startPoint, HexCell endPoint)
+    public static List<Pathable> FindPath(Pathable startPoint, Pathable endPoint)
     {
 
-        List<HexCell> openPathTiles = new();
-        List<HexCell> closedPathTiles = new();
+        List<Pathable> openPathTiles = new();
+        List<Pathable> closedPathTiles = new();
 
-        HexCell currentTile = startPoint;
+        Pathable currentTile = startPoint;
 
         currentTile.G = 0;
         currentTile.H = GetEstimatedPathCost(AxialToCubic(startPoint.Position), AxialToCubic(endPoint.Position));
@@ -28,14 +28,14 @@ public class Pathfinding : MonoBehaviour
                 return GetFinalPath();
             }
 
-            foreach (HexCell adjacentTile in currentTile.GetAdjacentTiles())
+            foreach (Pathable adjacentTile in currentTile.GetEdges())
             {
                 if (adjacentTile == null || closedPathTiles.Contains(adjacentTile)) continue;
                 if (adjacentTile.Occupied)
                 {
                     if (adjacentTile == endPoint)
                     {
-                        List<HexCell> path = GetFinalPath();
+                        List<Pathable> path = GetFinalPath();
                         return path.Take(path.Count - 1).ToList();
                     }
                     continue;
@@ -56,19 +56,19 @@ public class Pathfinding : MonoBehaviour
             }
         }
 
-        List<HexCell> GetFinalPath()
+        List<Pathable> GetFinalPath()
         {
-            List<HexCell> finalPathTiles = new List<HexCell>();
+            List<Pathable> finalPathTiles = new List<Pathable>();
 
-            HexCell cTile = endPoint;
+            Pathable cTile = endPoint;
 
             while (cTile != startPoint)
             {
                 finalPathTiles.Add(cTile);
-                HexCell nextTile = null;
+                Pathable nextTile = null;
                 int lowestG = int.MaxValue;
 
-                foreach (HexCell adjacentTile in cTile.GetAdjacentTiles())
+                foreach (Pathable adjacentTile in cTile.GetEdges())
                 {
                     if (adjacentTile == null || !closedPathTiles.Contains(adjacentTile))
                     {

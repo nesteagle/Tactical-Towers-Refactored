@@ -3,6 +3,7 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     public UnitState State { get; set; }
+    public Axial Location { get; set; }
 
     private int _health;
 
