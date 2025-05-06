@@ -11,7 +11,7 @@ public static class Pathfinding
         Pathable current = startPoint;
 
         current.G = 0;
-        current.H = GetEstimatedPathCost(startPoint.GetCubicPosition(), endPoint.GetCubicPosition());
+        current.H = GetEstimatedPathCost(startPoint.Position.ToCubic(), endPoint.Position.ToCubic());
         openPath.Add(current);
 
         while (openPath.Count != 0)
@@ -36,7 +36,7 @@ public static class Pathfinding
                 if (!openPath.Contains(adjacent))
                 {
                     adjacent.G = g;
-                    adjacent.H = GetEstimatedPathCost(adjacent.GetCubicPosition(), endPoint.GetCubicPosition());
+                    adjacent.H = GetEstimatedPathCost(adjacent.Position.ToCubic(), endPoint.Position.ToCubic());
                     openPath.Add(adjacent);
                 }
                 else if (adjacent.G > g)

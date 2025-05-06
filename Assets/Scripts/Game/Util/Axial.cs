@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public class Axial
 {
@@ -21,5 +22,10 @@ public class Axial
     public override int GetHashCode()
     {
         return HashCode.Combine(Q, R);
+    }
+
+    public Vector3Int ToCubic()
+    {
+       return new Vector3Int(Q, R, -Q - R);
     }
 }

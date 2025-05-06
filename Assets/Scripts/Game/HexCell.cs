@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class HexCell : Pathable
@@ -20,7 +19,8 @@ public class HexCell : Pathable
     public void SetTerrain(Terrain type)
     {
         _type = type;
-        SetColor(GetTileColor(_type));
+        SetColor(TerrainUtil.GetTerrainColor(type));
+        Occupied = TerrainUtil.IsTerrainObstructed(type);
     }
 
     private void SetColor(Color c)
@@ -31,20 +31,5 @@ public class HexCell : Pathable
     public void AddAdjacentTile(HexCell tile)
     {
         AddEdge(tile);
-    }
-
-    private Color GetTileColor(Terrain type)
-    {
-        switch (type)
-        {
-            case Terrain.Plain:
-                return Color.white;
-            case Terrain.Forest:
-                return Color.green;
-            case Terrain.Mountain:
-                return Color.gray;
-            default:
-                return Color.white;
-        }
     }
 }

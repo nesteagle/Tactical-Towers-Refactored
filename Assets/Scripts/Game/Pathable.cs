@@ -33,9 +33,4 @@ public abstract class Pathable : MonoBehaviour
     {
         Position = a;
     }
-
-    public Vector3Int GetCubicPosition()
-    {
-        return new Vector3Int(Position.Q, Position.R, -Position.Q - Position.R);
-    }
 }

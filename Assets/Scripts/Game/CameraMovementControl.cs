@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraMovementControl : MonoBehaviour
 {
-    private Camera _main;
+    private Camera _mainCamera;
 
     private const float xLimit = 3f;
     private const float yLimit = 6f;
@@ -16,14 +16,14 @@ public class CameraMovementControl : MonoBehaviour
 
     private void Awake()
     {
-        _main = GetComponent<Camera>();
+        _mainCamera = GetComponent<Camera>();
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(_activation))
         {
-            _mouseClickPos = _main.ScreenToWorldPoint(Input.mousePosition);
+            _mouseClickPos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
             StartCoroutine(HandleCameraMovement());
         }
         HandleBoundaries();
@@ -33,7 +33,7 @@ public class CameraMovementControl : MonoBehaviour
     {
         while (Input.GetKey(_activation))
         {
-            Vector2 mouseCurrentPos = _main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mouseCurrentPos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
             Vector3 distance = mouseCurrentPos - _mouseClickPos;
             transform.Translate(-distance.x, -distance.y, 0);
             yield return new WaitForEndOfFrame();
