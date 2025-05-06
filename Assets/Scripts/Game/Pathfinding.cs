@@ -1,103 +1,91 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-public class Pathfinding : MonoBehaviour
+public static class Pathfinding
 {
     public static List<Pathable> FindPath(Pathable startPoint, Pathable endPoint)
     {
+        List<Pathable> openPath = new();
+        HashSet<Pathable> closedPath = new();
 
-        List<Pathable> openPathTiles = new();
-        List<Pathable> closedPathTiles = new();
+        Pathable current = startPoint;
 
-        Pathable currentTile = startPoint;
+        current.G = 0;
+        current.H = GetEstimatedPathCost(startPoint.GetCubicPosition(), endPoint.GetCubicPosition());
+        openPath.Add(current);
 
-        currentTile.G = 0;
-        currentTile.H = GetEstimatedPathCost(AxialToCubic(startPoint.Position), AxialToCubic(endPoint.Position));
-        openPathTiles.Add(currentTile);
-
-        while (openPathTiles.Count != 0)
+        while (openPath.Count != 0)
         {
-            openPathTiles = openPathTiles.OrderBy(x => x.F).ThenByDescending(x => x.G).ToList();
-            currentTile = openPathTiles[0];
+            openPath = openPath.OrderBy(x => x.F).ThenByDescending(x => x.G).ToList();
+            current = openPath[0];
 
-            openPathTiles.Remove(currentTile);
-            closedPathTiles.Add(currentTile);
+            openPath.Remove(current);
+            closedPath.Add(current);
 
-            if (currentTile == endPoint)
+            if (current == endPoint)
             {
-                return GetFinalPath();
+                return GetFinalPath(startPoint,endPoint,closedPath);
             }
 
-            foreach (Pathable adjacentTile in currentTile.GetEdges())
+            foreach (Pathable adjacent in current.GetEdges())
             {
-                if (adjacentTile == null || closedPathTiles.Contains(adjacentTile)) continue;
-                if (adjacentTile.Occupied)
+                if (adjacent == null || adjacent.Occupied || closedPath.Contains(adjacent)) continue;
+
+                int g = current.G + adjacent.Weight + 1; // Consider the weight between the current tile and the adjacent tile.
+
+                if (!openPath.Contains(adjacent))
                 {
-                    if (adjacentTile == endPoint)
-                    {
-                        List<Pathable> path = GetFinalPath();
-                        return path.Take(path.Count - 1).ToList();
-                    }
+                    adjacent.G = g;
+                    adjacent.H = GetEstimatedPathCost(adjacent.GetCubicPosition(), endPoint.GetCubicPosition());
+                    openPath.Add(adjacent);
+                }
+                else if (adjacent.G > g)
+                {
+                    adjacent.G = g;
+                }
+            }
+        }
+
+        return new List<Pathable>(); // Failure
+    }
+
+    private static List<Pathable> GetFinalPath(Pathable startPoint, Pathable endPoint, HashSet<Pathable> closedPath)
+    {
+        List<Pathable> finalPath = new();
+
+        Pathable current = endPoint;
+
+        while (current != startPoint)
+        {
+            if (!current.Occupied)
+            {
+                finalPath.Add(current);
+            }
+            Pathable nextTile = null;
+            int lowestG = int.MaxValue;
+
+            foreach (Pathable adjacentTile in current.GetEdges())
+            {
+                if (adjacentTile == null || !closedPath.Contains(adjacentTile))
+                {
                     continue;
                 }
-
-                int g = currentTile.G + 1 + adjacentTile.Weight; // Consider the weight between the current tile and the adjacent tile.
-
-                if (!(openPathTiles.Contains(adjacentTile)))
+                if (adjacentTile.G < lowestG)
                 {
-                    adjacentTile.G = g;
-                    adjacentTile.H = GetEstimatedPathCost(AxialToCubic(adjacentTile.Position), AxialToCubic(endPoint.Position));
-                    openPathTiles.Add(adjacentTile);
-                }
-                else if (adjacentTile.G > g)
-                {
-                    adjacentTile.G = g;
+                    lowestG = adjacentTile.G;
+                    nextTile = adjacentTile;
                 }
             }
+
+            current = nextTile;
         }
-
-        List<Pathable> GetFinalPath()
-        {
-            List<Pathable> finalPathTiles = new List<Pathable>();
-
-            Pathable cTile = endPoint;
-
-            while (cTile != startPoint)
-            {
-                finalPathTiles.Add(cTile);
-                Pathable nextTile = null;
-                int lowestG = int.MaxValue;
-
-                foreach (Pathable adjacentTile in cTile.GetEdges())
-                {
-                    if (adjacentTile == null || !closedPathTiles.Contains(adjacentTile))
-                    {
-                        continue;
-                    }
-                    if (adjacentTile.G < lowestG)
-                    {
-                        lowestG = adjacentTile.G;
-                        nextTile = adjacentTile;
-                    }
-                }
-
-                cTile = nextTile;
-            }
-            finalPathTiles.Add(startPoint);
-            finalPathTiles.Reverse();
-            return finalPathTiles;
-        }
-
-        return null; // Failure  
+        finalPath.Add(startPoint);
+        finalPath.Reverse();
+        return finalPath;
     }
 
-    protected static int GetEstimatedPathCost(Vector3Int startPosition, Vector3Int targetPosition)
+    private static int GetEstimatedPathCost(Vector3Int startPosition, Vector3Int targetPosition)
     {
         return Mathf.Max(Mathf.Abs(startPosition.z - targetPosition.z), Mathf.Max(Mathf.Abs(startPosition.x - targetPosition.x), Mathf.Abs(startPosition.y - targetPosition.y)));
-    }
-
-    public static Vector3Int AxialToCubic(Vector2Int axial)
-    {
-        return new Vector3Int(axial.x, axial.y, -axial.x - axial.y);
     }
 }

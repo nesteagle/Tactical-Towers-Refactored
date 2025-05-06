@@ -7,7 +7,7 @@ public abstract class Pathable : MonoBehaviour
     public int H { get; set; }
     public int F => G + H;
 
-    public Vector2Int Position { get; set; } // Z = -x -y
+    public Axial Position { get; set; } // Z = -x -y
     private readonly List<Pathable> _edges;
     public bool Occupied { get; set; }
     public int Weight { get; set; }
@@ -31,6 +31,11 @@ public abstract class Pathable : MonoBehaviour
 
     public void Initialize(Axial a)
     {
-        Position = new Vector2Int(a.Q, a.R);
+        Position = a;
+    }
+
+    public Vector3Int GetCubicPosition()
+    {
+        return new Vector3Int(Position.Q, Position.R, -Position.Q - Position.R);
     }
 }

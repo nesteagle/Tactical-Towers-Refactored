@@ -3,9 +3,15 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     public UnitState State { get; set; }
-    public Axial Location { get; set; }
+    private Axial _location;
+    private UnitMover _mover;
 
     private int _health;
+
+    private void Awake()
+    {
+        _mover = GetComponent<UnitMover>();
+    }
 
     public int GetHealth()
     {
@@ -20,5 +26,20 @@ public class Unit : MonoBehaviour
             Destroy(gameObject);
             // notify observers
         }
+    }
+
+    public void SetLocation(Axial a)
+    {
+        _location = a;
+    }
+
+    public Axial GetLocation()
+    {
+        return _location;
+    }
+
+    public void MoveTo(HexCell c)
+    {
+        _mover.MoveTo(c);
     }
 }

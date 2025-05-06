@@ -6,17 +6,14 @@ public class HexMap : MonoBehaviour
 {
     [SerializeField] private GameObject _cellPrefab;
 
-    private Dictionary<Axial, HexCell> _cells;
+    private static readonly Dictionary<Axial, HexCell> _cells = new();
     private readonly int _radius = 12;
-    private const int ZERO = 0;
 
-    private void Awake()
+    public void Initialize()
     {
-        _cells = new Dictionary<Axial, HexCell>();
         GenerateMap(_radius);
         GenerateAdjacentTiles();
         GenerateTerrain();
-        Debug.Log("Generated map");
     }
 
     private void GenerateMap(int radius)
@@ -89,25 +86,30 @@ public class HexMap : MonoBehaviour
     {
         Axial a = new(q, r);
 
-        Vector3 position = new(a.Q * (HexData.InnerRadius * 2f) + (a.R * HexData.InnerRadius), a.R * (HexData.OuterRadius * 1.5f), 10f);
+        Vector3 position = new(HexData.InnerRadius * (2f * a.Q + a.R), a.R * (1.5f * HexData.OuterRadius), 10f);
 
         GameObject cellObj = Instantiate(_cellPrefab);
         cellObj.transform.SetParent(transform);
         cellObj.transform.localPosition = position;
         HexCell cell = cellObj.GetComponent<HexCell>();
-        if (GetCell(q, r) == null)
+        if (GetCell(a) == null)
         {
             _cells.Add(a, cell);
         }
         cell.Initialize(a);
     }
 
-    public HexCell GetCell(int q, int r)
+    public static HexCell GetCell(Axial a)
     {
-        if (_cells.TryGetValue(new Axial(q, r), out HexCell cell))
+        if (_cells.TryGetValue(a, out HexCell cell))
         {
             return cell;
         }
         return null;
     }
-}
+
+    public static HexCell GetCell(int q, int r)
+    {
+        return GetCell(new Axial(q, r));
+    }
+ }
