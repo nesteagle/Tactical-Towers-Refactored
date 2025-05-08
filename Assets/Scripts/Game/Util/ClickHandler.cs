@@ -6,8 +6,9 @@ public class ClickHandler : MonoBehaviour
 {
     private Camera _mainCamera;
     [SerializeField] private HexMap _map;
-    [SerializeField] private LayerMask _unitLayer;
+    [SerializeField] private BuildingPlacer _buildingPlacer;
 
+    [SerializeField] private LayerMask _unitLayer;
 
     private void Awake()
     {
@@ -35,7 +36,7 @@ public class ClickHandler : MonoBehaviour
                 if (cell != null)
                 {
                     // cell clicked
-                    Debug.Log("Cell clicked: " + cell.Position.Q + " " + cell.Position.R);
+                    _buildingPlacer.PlaceBuilding(cell);
                 }
             }
         }

@@ -27,9 +27,4 @@ public class HexCell : Pathable
     {
         _renderer.color = c;
     }
-
-    public void AddAdjacentTile(HexCell tile)
-    {
-        AddEdge(tile);
-    }
 }

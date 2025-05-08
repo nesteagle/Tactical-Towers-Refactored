@@ -41,7 +41,7 @@ public class HexMap : MonoBehaviour
 
                 if (_cells.TryGetValue(new Axial(q, r), out HexCell adjacentCell))
                 {
-                    c.AddAdjacentTile(adjacentCell);
+                    c.AddEdge(adjacentCell);
                 }
             }
         }
@@ -85,6 +85,11 @@ public class HexMap : MonoBehaviour
     private void AddCell(int q, int r)
     {
         Axial a = new(q, r);
+        
+        if (GetCell(a) != null)
+        {
+            return;
+        }
 
         Vector3 position = new(HexData.InnerRadius * (2f * a.Q + a.R), a.R * (1.5f * HexData.OuterRadius), 10f);
 
@@ -92,10 +97,8 @@ public class HexMap : MonoBehaviour
         cellObj.transform.SetParent(transform);
         cellObj.transform.localPosition = position;
         HexCell cell = cellObj.GetComponent<HexCell>();
-        if (GetCell(a) == null)
-        {
-            _cells.Add(a, cell);
-        }
+        _cells.Add(a, cell);
+
         cell.Initialize(a);
     }
 
@@ -112,4 +115,4 @@ public class HexMap : MonoBehaviour
     {
         return GetCell(new Axial(q, r));
     }
- }
+}

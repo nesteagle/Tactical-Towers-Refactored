@@ -19,7 +19,7 @@ public abstract class Pathable : MonoBehaviour
         _edges = new List<Pathable>();
     }
 
-    protected void AddEdge(Pathable p)
+    public void AddEdge(Pathable p)
     {
         _edges.Add(p);
     }
