@@ -93,7 +93,13 @@ public class BuildingPlacer : MonoBehaviour
         LineRenderer line = buildingObj.GetComponent<LineRenderer>();
         line.positionCount = path.Count;
 
-        List<Vector3> pathPositions = path.ConvertAll(x => HexMapUtil.GetCellPositionFromAxial(x.Position));
+        List<Vector3> pathPositions = new();
+        foreach (Pathable p in path)
+        {
+            Vector3 pos = HexMapUtil.GetCellPositionFromAxial(p.Position);
+            pos.z = 0;
+            pathPositions.Add(pos);
+        }
         line.SetPositions(pathPositions.ToArray());
         line.enabled = true;
     }

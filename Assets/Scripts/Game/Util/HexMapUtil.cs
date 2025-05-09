@@ -2,6 +2,7 @@ using UnityEngine;
 
 public static class HexMapUtil
 {
+    private const float Z = 0f;
     public static Axial GetCellAxialFromPosition(Vector3 position)
     {
         float x = position.x;
@@ -15,6 +16,6 @@ public static class HexMapUtil
 
     public static Vector3 GetCellPositionFromAxial(Axial a)
     {
-        return new(HexData.InnerRadius * (2f * a.Q + a.R), a.R * (1.5f * HexData.OuterRadius), 10f);
+        return new(HexData.InnerRadius * (2f * a.Q + a.R), a.R * (1.5f * HexData.OuterRadius), Z);
     }
 }

@@ -24,7 +24,7 @@ public class HexMap : MonoBehaviour
             int higherR = Mathf.Min(radius, -q + radius);
             for (int r = lowerR; r <= higherR; r++)
             {
-                AddCell(q, r);
+                AddCell(new Axial(q, r));
             }
         }
     }
@@ -82,16 +82,14 @@ public class HexMap : MonoBehaviour
         }
     }
 
-    private void AddCell(int q, int r)
-    {
-        Axial a = new(q, r);
-        
+    private void AddCell(Axial a)
+    {        
         if (GetCell(a) != null)
         {
             return;
         }
 
-        Vector3 position = new(HexData.InnerRadius * (2f * a.Q + a.R), a.R * (1.5f * HexData.OuterRadius), 10f);
+        Vector3 position = HexMapUtil.GetCellPositionFromAxial(a);
 
         GameObject cellObj = Instantiate(_cellPrefab);
         cellObj.transform.SetParent(transform);

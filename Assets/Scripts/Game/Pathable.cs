@@ -8,7 +8,7 @@ public abstract class Pathable : MonoBehaviour
     public int F => G + H;
 
     public Axial Position { get; set; } // Z = -x -y
-    private readonly List<Pathable> _edges;
+    private List<Pathable> _edges;
     public bool Occupied { get; set; }
     public int Weight { get; set; }
 
@@ -27,6 +27,11 @@ public abstract class Pathable : MonoBehaviour
     public List<Pathable> GetEdges()
     {
         return _edges;
+    }
+
+    public void SetEdges(List<Pathable> edges)
+    {
+        _edges = edges;
     }
 
     public void Initialize(Axial a)
