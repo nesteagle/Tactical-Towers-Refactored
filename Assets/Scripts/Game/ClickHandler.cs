@@ -7,6 +7,7 @@ public class ClickHandler : MonoBehaviour
     private Camera _mainCamera;
     [SerializeField] private HexMap _map;
     [SerializeField] private BuildingPlacer _buildingPlacer;
+    [SerializeField] private UnitMoverUI _unitMoverUI;
 
     [SerializeField] private LayerMask _unitLayer;
 
@@ -26,8 +27,8 @@ public class ClickHandler : MonoBehaviour
 
             if (hit.collider != null)
             {
-                // unit clicked
-                Debug.Log("Unit clicked: " + hit.collider.gameObject.name);
+                Unit u = hit.collider.GetComponent<Unit>();
+                _unitMoverUI.StartSelectPath(u);
             }
             else
             {

@@ -1,17 +1,21 @@
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 public static class Pathfinding
 {
-    public static List<Pathable> FindPath(Pathable startPoint, Pathable endPoint)
+    public static List<Node> FindPath(Node startPoint, Node endPoint)
     {
-        List<Pathable> openPath = new();
-        HashSet<Pathable> closedPath = new();
+        if (startPoint == null || endPoint == null)
+        {
+            return new List<Node>(); // Failure
+        }
+        List<Node> openPath = new();
+        HashSet<Node> closedPath = new();
 
-        Pathable current = startPoint;
+        Node current = startPoint;
 
         current.G = 0;
-        current.H = GetEstimatedPathCost(startPoint.Position, endPoint.Position);
+        current.H = HexMapUtil.GetDistance(startPoint.Position, endPoint.Position);
         openPath.Add(current);
 
         while (openPath.Count != 0)
@@ -24,10 +28,10 @@ public static class Pathfinding
 
             if (current == endPoint)
             {
-                return GetFinalPath(startPoint,endPoint,closedPath);
+                return GetFinalPath(startPoint, endPoint, closedPath);
             }
 
-            foreach (Pathable adjacent in current.GetEdges())
+            foreach (Node adjacent in current.GetEdges())
             {
                 if (adjacent == null || adjacent.Occupied || closedPath.Contains(adjacent)) continue;
 
@@ -36,7 +40,7 @@ public static class Pathfinding
                 if (!openPath.Contains(adjacent))
                 {
                     adjacent.G = g;
-                    adjacent.H = GetEstimatedPathCost(adjacent.Position, endPoint.Position);
+                    adjacent.H = HexMapUtil.GetDistance(adjacent.Position, endPoint.Position);
                     openPath.Add(adjacent);
                 }
                 else if (adjacent.G > g)
@@ -46,14 +50,14 @@ public static class Pathfinding
             }
         }
 
-        return new List<Pathable>(); // Failure
+        return new List<Node>(); // Failure
     }
 
-    private static List<Pathable> GetFinalPath(Pathable startPoint, Pathable endPoint, HashSet<Pathable> closedPath)
+    private static List<Node> GetFinalPath(Node startPoint, Node endPoint, HashSet<Node> closedPath)
     {
-        List<Pathable> finalPath = new();
+        List<Node> finalPath = new();
 
-        Pathable current = endPoint;
+        Node current = endPoint;
 
         while (current != startPoint)
         {
@@ -61,10 +65,10 @@ public static class Pathfinding
             {
                 finalPath.Add(current);
             }
-            Pathable nextTile = null;
+            Node nextTile = null;
             int lowestG = int.MaxValue;
 
-            foreach (Pathable adjacentTile in current.GetEdges())
+            foreach (Node adjacentTile in current.GetEdges())
             {
                 if (adjacentTile == null || !closedPath.Contains(adjacentTile))
                 {
@@ -84,13 +88,5 @@ public static class Pathfinding
         return finalPath;
     }
 
-    public static int GetEstimatedPathCost(Vector3Int startPosition, Vector3Int targetPosition)
-    {
-        return Mathf.Max(Mathf.Abs(startPosition.z - targetPosition.z), Mathf.Max(Mathf.Abs(startPosition.x - targetPosition.x), Mathf.Abs(startPosition.y - targetPosition.y)));
-    }
 
-    public static int GetEstimatedPathCost(Axial startPosition, Axial targetPosition)
-    {
-        return GetEstimatedPathCost(startPosition.ToCubic(), targetPosition.ToCubic());
-    }
 }

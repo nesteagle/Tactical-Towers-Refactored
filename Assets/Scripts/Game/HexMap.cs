@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -83,7 +82,7 @@ public class HexMap : MonoBehaviour
     }
 
     private void AddCell(Axial a)
-    {        
+    {
         if (GetCell(a) != null)
         {
             return;

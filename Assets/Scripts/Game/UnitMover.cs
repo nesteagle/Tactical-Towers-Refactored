@@ -15,18 +15,20 @@ public class UnitMover : MonoBehaviour
 
     private IEnumerator MoveCoroutine(HexCell c)
     {
-        List<Pathable> path = Pathfinding.FindPath(HexMap.GetCell(_unit.GetLocation()), c);
-        IEnumerator<Pathable> pathEnumerator = path.GetEnumerator();
+        List<Node> path = Pathfinding.FindPath(HexMap.GetCell(_unit.Position), c);
+        IEnumerator<Node> pathEnumerator = path.GetEnumerator();
         pathEnumerator.MoveNext(); // skips the first element
         while (pathEnumerator.MoveNext())
         {
             HexCell dest = (HexCell)pathEnumerator.Current;
             yield return StartCoroutine(MoveStep(dest));
         }
+        _unit.State = UnitState.Rest;
     }
 
     public void MoveTo(HexCell c)
     {
+        _unit.State = UnitState.Moving;
         StartCoroutine(MoveCoroutine(c));
     }
 
@@ -41,5 +43,6 @@ public class UnitMover : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         _unit.transform.position = destPos;
+        _unit.Position = to.Position;
     }
 }

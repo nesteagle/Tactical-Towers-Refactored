@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,26 +5,35 @@ public class UnitManager : MonoBehaviour
 {
     [SerializeField] private GameObject _unitPrefab;
 
-    private readonly List<Unit> _units = new();
+    private readonly List<Attacker> _units = new();
     private const int Z = 0;
 
-    public Unit CreateUnit(HexCell c)
+    public Attacker CreateUnit(HexCell c)
     {
         Vector3 cellPos = c.transform.position;
         GameObject unitObject = Instantiate(_unitPrefab);
-        Unit unit = unitObject.GetComponent<Unit>();
+        Attacker unit = unitObject.GetComponent<Attacker>();
         AddUnit(unit);
-        unit.SetLocation(c.Position);
-        unit.transform.position = new Vector3(cellPos.x,cellPos.y, Z);
+        unit.Position = c.Position;
+        unit.transform.position = new Vector3(cellPos.x, cellPos.y, Z);
+        unit.State = UnitState.Rest;
         return unit;
     }
 
-    public void AddUnit(Unit unit)
+    public void AddUnit(Attacker unit)
     {
         _units.Add(unit);
     }
 
-    public void RemoveUnit(Unit unit) { 
+    public void RemoveUnit(Attacker unit)
+    {
         _units.Remove(unit);
+    }
+
+    private void FixedUpdate()
+    {
+        foreach (Attacker unit in _units) {
+            unit.TryAttack();
+        }
     }
 }

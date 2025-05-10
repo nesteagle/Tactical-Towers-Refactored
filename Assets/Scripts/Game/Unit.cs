@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Unit : MonoBehaviour
+public abstract class Unit : MonoBehaviour, IAttackable
 {
     public UnitState State { get; set; }
-    private Axial _location;
+    public Axial Position { get; set; }
     private UnitMover _mover;
 
     private int _health;
@@ -18,24 +19,14 @@ public class Unit : MonoBehaviour
         return _health;
     }
 
-    public void RemoveHealth()
+    public void TakeDamage()
     {
         _health--;
         if (_health <= 0)
-        {   
+        {
             Destroy(gameObject);
             // notify observers
         }
-    }
-
-    public void SetLocation(Axial a)
-    {
-        _location = a;
-    }
-
-    public Axial GetLocation()
-    {
-        return _location;
     }
 
     public void MoveTo(HexCell c)

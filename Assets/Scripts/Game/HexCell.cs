@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class HexCell : Pathable
+public class HexCell : Node
 {
     private Terrain _type;
     private SpriteRenderer _renderer;
@@ -19,12 +19,17 @@ public class HexCell : Pathable
     public void SetTerrain(Terrain type)
     {
         _type = type;
-        SetColor(TerrainUtil.GetTerrainColor(type));
         Occupied = TerrainUtil.IsTerrainObstructed(type);
+        ResetColor();
     }
 
-    private void SetColor(Color c)
+    public void SetColor(Color c)
     {
         _renderer.color = c;
+    }
+
+    public void ResetColor()
+    {
+        SetColor(TerrainUtil.GetTerrainColor(_type));
     }
 }
