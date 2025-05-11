@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Path : MonoBehaviour, IAttackable
+public class Path : Structure
 {
     private Building _origin;
     private Building _dest;
@@ -16,9 +16,12 @@ public class Path : MonoBehaviour, IAttackable
         {
             return;
         }
-        _line = GetComponent<LineRenderer>();
+        from.AddChild(this); // add edge to this path
+        AddChild(to); // add edge to destination
+        _line = to.GetComponent<LineRenderer>(); // Get the LineRenderer component from the "to" building
         DrawPath();
     }
+
     private void DrawPath()
     {
         _path = Pathfinding.FindPath(HexMap.GetCell(_origin.Position), HexMap.GetCell(_dest.Position));
@@ -38,9 +41,8 @@ public class Path : MonoBehaviour, IAttackable
         _line.enabled = true;
     }
 
-    public void TakeDamage()
+    override protected void Remove()
     {
-        // stub
-        Debug.Log("Path attacked");
+        Destroy(this.gameObject); // TODO: check alternatives
     }
 }

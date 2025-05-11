@@ -19,9 +19,9 @@ public class UnitMoverUI : MonoBehaviour
         }
     }
 
-    private IEnumerator SelectPath(Unit origin)
+    private IEnumerator SelectPath(Unit toMove)
     {
-        Axial originPos = origin.Position;
+        Axial originPos = toMove.Position;
         HexCell destination = null;
         while (Input.GetMouseButton(0))
         {
@@ -35,8 +35,11 @@ public class UnitMoverUI : MonoBehaviour
         }
         if (destination != null)
         {
-            origin.MoveTo(destination);
+            toMove.MoveTo(destination);
         }
+        yield return new WaitUntil(() => toMove.State == UnitState.Rest);
+        _selectedPath.Clear();
+        UpdateCellColors();
         _isCoroutineActive = false;
     }
 

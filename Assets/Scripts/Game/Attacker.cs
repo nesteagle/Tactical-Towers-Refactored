@@ -19,7 +19,7 @@ public class Attacker : Unit
             return;
         }
         _lastAttackTime = currentTime;
-        List<IAttackable> targets = GameMap.GetTargetsInRange(Position, 2);
+        List<IAttackable> targets = GameMap.GetTargetsInRange(Position, 1);
         // TODO: potentially add sorting/prioritizing of targets here
         if (targets.Count > 0)
         {

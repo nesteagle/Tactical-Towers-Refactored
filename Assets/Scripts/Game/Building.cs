@@ -1,10 +1,9 @@
-using UnityEngine;
-
-public class Building : Node, IAttackable
+public class Building : Structure
 {
-    public void TakeDamage()
+    override protected void Remove()
     {
-        // stub
-        Debug.Log("Building attacked");
+        BuildingMap.RemoveBuilding(Position);
+        GameMap.RemoveAttackable(this);
+        Destroy(this.gameObject); // TODO: check alternatives
     }
 }

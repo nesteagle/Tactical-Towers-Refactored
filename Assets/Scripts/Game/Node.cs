@@ -8,7 +8,7 @@ public abstract class Node : MonoBehaviour
     public int F => G + H;
 
     public Axial Position { get; set; } // Z = -x -y
-    private List<Node> _edges;
+    private HashSet<Node> _edges;
     public bool Occupied { get; set; }
     public int Weight { get; set; }
 
@@ -16,7 +16,7 @@ public abstract class Node : MonoBehaviour
     {
         Weight = 0;
         Occupied = false;
-        _edges = new List<Node>();
+        _edges = new HashSet<Node>();
     }
 
     public void AddEdge(Node p)
@@ -24,12 +24,17 @@ public abstract class Node : MonoBehaviour
         _edges.Add(p);
     }
 
-    public List<Node> GetEdges()
+    public void RemoveEdge(Node p)
+    {
+        _edges.Remove(p);
+    }
+
+    public HashSet<Node> GetEdges()
     {
         return _edges;
     }
 
-    public void SetEdges(List<Node> edges)
+    public void SetEdges(HashSet<Node> edges)
     {
         _edges = edges;
     }

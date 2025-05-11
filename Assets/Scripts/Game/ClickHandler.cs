@@ -6,7 +6,7 @@ public class ClickHandler : MonoBehaviour
 {
     private Camera _mainCamera;
     [SerializeField] private HexMap _map;
-    [SerializeField] private BuildingPlacer _buildingPlacer;
+    [SerializeField] private BuildingMap _buildingPlacer;
     [SerializeField] private UnitMoverUI _unitMoverUI;
 
     [SerializeField] private LayerMask _unitLayer;

@@ -20,6 +20,34 @@ public class GameMap : MonoBehaviour
         _attackable[pos].Add(attackable);
     }
 
+    public static void RemoveAttackable(Axial pos)
+    {
+        if (_attackable.ContainsKey(pos))
+        {
+            _attackable[pos].RemoveAt(0);
+            if (_attackable[pos].Count == 0)
+            {
+                _attackable.Remove(pos);
+            }
+        }
+    }
+
+    public static void RemoveAttackable(IAttackable attackable)
+    {
+        foreach (var entry in _attackable)
+        {
+            if (entry.Value.Contains(attackable))
+            {
+                entry.Value.Remove(attackable);
+                if (entry.Value.Count == 0)
+                {
+                    _attackable.Remove(entry.Key);
+                }
+                break;
+            }
+        }
+    }
+
     public static List<IAttackable> GetTargetsInRange(Axial position, int tileRange)
     {
         HexCell cell = HexMap.GetCell(position);
