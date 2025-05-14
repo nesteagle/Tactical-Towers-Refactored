@@ -27,8 +27,13 @@ public class BuildingMap : MonoBehaviour
         Building newBuilding = newBuildingGameObject.GetComponent<Building>();
         newBuilding.Position = cellPosition;
         _buildings.Add(cellPosition, newBuilding);
-        GameMap.AddAttackable(cellPosition, newBuilding);
-        AddPathTo(newBuilding);
+        GameMap.SetAttackableStructure(cellPosition, newBuilding);
+
+        Axial closestBuildingPosition = GetClosestBuilding(newBuilding.Position);
+        if (closestBuildingPosition != null)
+        {
+            AddPath(_buildings[closestBuildingPosition], newBuilding);
+        }
     }
 
     public static void RemoveBuilding(Axial axialPosition)
@@ -40,20 +45,15 @@ public class BuildingMap : MonoBehaviour
         }
     }
 
-    private void AddPathTo(Building newBuilding)
+    private void AddPath(Building from, Building to)
     {
-        Axial closestBuildingPosition = GetClosestBuilding(newBuilding.Position);
-        if (closestBuildingPosition == null)
-        {
-            Debug.Log("No closest building found");
-            return;
-        }
-        Building closestBuilding = _buildings[closestBuildingPosition];
-        Path path = closestBuilding.GetComponent<Path>();
-        path.Initialize(closestBuilding, newBuilding);
+        Path path = to.GetComponent<Path>();
+        path.Initialize(from, to);
+        from.AddChild(path);
+        path.AddChild(to);
     }
 
-    private Axial GetClosestBuilding(Axial origin)
+    public static Axial GetClosestBuilding(Axial origin)
     {
         Axial closest = null;
         int closestDistance = int.MaxValue;

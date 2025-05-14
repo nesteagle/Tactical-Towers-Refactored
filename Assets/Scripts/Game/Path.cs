@@ -12,12 +12,8 @@ public class Path : Structure
     {
         _origin = from;
         _dest = to;
-        if (from == null || to == null)
-        {
-            return;
-        }
-        from.AddChild(this); // add edge to this path
-        AddChild(to); // add edge to destination
+        Position = from.Position; // set path position to the origin
+
         _line = to.GetComponent<LineRenderer>(); // Get the LineRenderer component from the "to" building
         DrawPath();
     }
@@ -33,7 +29,7 @@ public class Path : Structure
         {
             Axial axialPos = p.Position;
             Vector3 pos = HexMapUtil.GetCellPositionFromAxial(axialPos);
-            GameMap.AddAttackable(axialPos, this);
+            GameMap.SetAttackableStructure(axialPos, this);
             pos.z = 0;
             pathPositions.Add(pos);
         }
@@ -41,8 +37,15 @@ public class Path : Structure
         _line.enabled = true;
     }
 
-    override protected void Remove()
+    protected override void Remove()
     {
-        Destroy(this.gameObject); // TODO: check alternatives
+        // TODO: refactor to fix removing stacked paths from structure map
+        foreach (Node n in _path)
+        {
+            GameMap.RemoveAttackableStructure(n.Position);
+        }
+        _origin.RemoveChild(this);
+        Destroy(gameObject);
+        Destroy(this);
     }
 }

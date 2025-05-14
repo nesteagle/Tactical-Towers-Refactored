@@ -4,48 +4,40 @@ using UnityEngine;
 
 public class GameMap : MonoBehaviour
 {
-    private static Dictionary<Axial, List<IAttackable>> _attackable = new();
+    private static Dictionary<Axial, Structure> _structures = new();
+    private static Dictionary<Axial, Unit> _units = new();
 
-    public static Dictionary<Axial, List<IAttackable>> GetAttackable()
+    public static void SetAttackableUnit(Axial pos, Unit attackable)
     {
-        return _attackable;
-    }
-
-    public static void AddAttackable(Axial pos, IAttackable attackable)
-    {
-        if (!_attackable.ContainsKey(pos))
+        if (_units.ContainsKey(pos))
         {
-            _attackable[pos] = new List<IAttackable>();
-        }
-        _attackable[pos].Add(attackable);
-    }
-
-    public static void RemoveAttackable(Axial pos)
-    {
-        if (_attackable.ContainsKey(pos))
+            _units[pos] = attackable;
+        } else
         {
-            _attackable[pos].RemoveAt(0);
-            if (_attackable[pos].Count == 0)
-            {
-                _attackable.Remove(pos);
-            }
+            _units.Add(pos, attackable);
         }
     }
 
-    public static void RemoveAttackable(IAttackable attackable)
+    public static void RemoveAttackableUnit(Axial pos)
     {
-        foreach (var entry in _attackable)
+        _units.Remove(pos);
+    }
+
+    public static void SetAttackableStructure(Axial pos, Structure attackable)
+    {
+        if (_structures.ContainsKey(pos))
         {
-            if (entry.Value.Contains(attackable))
-            {
-                entry.Value.Remove(attackable);
-                if (entry.Value.Count == 0)
-                {
-                    _attackable.Remove(entry.Key);
-                }
-                break;
-            }
+            _structures[pos] = attackable;
         }
+        else
+        {
+            _structures.Add(pos, attackable);
+        }
+    }
+
+    public static void RemoveAttackableStructure(Axial pos)
+    {
+        _structures.Remove(pos);
     }
 
     public static List<IAttackable> GetTargetsInRange(Axial position, int tileRange)
@@ -53,13 +45,34 @@ public class GameMap : MonoBehaviour
         HexCell cell = HexMap.GetCell(position);
         List<IAttackable> targetsInRange = new();
 
-        foreach (Axial targetPos in _attackable.Keys)
+        foreach (Axial targetPos in _units.Keys)
         {
             if (HexMapUtil.GetDistance(cell.Position, targetPos) <= tileRange)
             {
-                targetsInRange.AddRange(_attackable[targetPos]);
+                targetsInRange.Add(_units[targetPos]);
+            }
+        }
+        foreach (Axial targetPos in _structures.Keys)
+        {
+            if (HexMapUtil.GetDistance(cell.Position, targetPos) <= tileRange)
+            {
+                targetsInRange.Add(_structures[targetPos]);
             }
         }
         return targetsInRange;
+    }
+
+    public static Unit GetAttackableUnit(Axial position)
+    {
+        if (_units.TryGetValue(position, out Unit u))
+            return u;
+        return null;
+    }
+
+    public static Structure GetAttackableStructure(Axial position)
+    {
+        if (_structures.TryGetValue(position, out Structure s))
+            return s;
+        return null;
     }
 }

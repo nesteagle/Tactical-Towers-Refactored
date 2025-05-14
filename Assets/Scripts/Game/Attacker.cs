@@ -20,6 +20,7 @@ public class Attacker : Unit
         }
         _lastAttackTime = currentTime;
         List<IAttackable> targets = GameMap.GetTargetsInRange(Position, 1);
+        targets.Remove(this);
         // TODO: potentially add sorting/prioritizing of targets here
         if (targets.Count > 0)
         {

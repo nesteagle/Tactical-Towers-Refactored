@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.HID;
 
 public abstract class Structure : MonoBehaviour, IAttackable
 {
     public Axial Position { get; set; }
     private HashSet<Structure> _structures = new HashSet<Structure>();
+    private Structure _parent;
 
     public void TakeDamage()
     {
@@ -31,8 +31,8 @@ public abstract class Structure : MonoBehaviour, IAttackable
     public HashSet<Structure> GetAllChildren()
     {
         HashSet<Structure> children = new HashSet<Structure>();
-        children.Add(this);
-        foreach (Structure child in GetStructures()) { 
+        foreach (Structure child in GetStructures())
+        {
             children.Add(child);
             children.UnionWith(child.GetAllChildren());
         }

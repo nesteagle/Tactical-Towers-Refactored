@@ -36,6 +36,8 @@ public class UnitMover : MonoBehaviour
     {
         Vector3 originPos = _unit.transform.position;
         Vector3 destPos = new(to.transform.position.x, to.transform.position.y);
+        GameMap.RemoveAttackableUnit(_unit.Position);
+        GameMap.SetAttackableUnit(to.Position, _unit);
         yield return new WaitForSeconds(RestTime);
         for (float i = 0; i < 1; i += Time.deltaTime * Speed)
         {
